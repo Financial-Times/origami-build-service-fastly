@@ -3,7 +3,7 @@ resource "fastly_service_v1" "app" {
 
   // These domains are used by the staging Fastly service only.
   domain {
-    name    = "origami-build-service-cdn-test.in.ft.com"
+    name = "origami-build-service-cdn-test.in.ft.com"
   }
 
   // Logging to S3, see https://docs.fastly.com/guides/streaming-logs/custom-log-formats for formats.
