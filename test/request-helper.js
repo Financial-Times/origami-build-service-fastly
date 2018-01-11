@@ -5,8 +5,8 @@ const URL = require("url").URL;
 chai.use(require("chai-http"));
 
 const hostOverride = host =>
-  process.env.CIRCLE_STAGE === "verify_test"
-    ? host.replace(".ft.com", "-cdn-test.ft.com")
+  process.env.CIRCLE_STAGE === "test_staging"
+    ? host.replace(".in.ft.com", "-cdn-test.in.ft.com")
     : host;
 
 // Handle the weird promise rejection required to test redirects.
