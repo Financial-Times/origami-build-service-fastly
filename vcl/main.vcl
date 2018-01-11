@@ -23,7 +23,7 @@ sub vcl_recv {
 	}
 
   # Table is stored in a VCL snippet which can be viewed via the Fastly UI.
-  if (req.http.FT-Origami-Key != table.lookup(secrets, "FT-Origami-Key")) {
+  if (req.url != "/__gtg" && req.url != "/__health" && req.url != "/__about" && req.http.FT-Origami-Key != table.lookup(secrets, "FT-Origami-Key")) {
     error 901 "Invalid key";
   }
 
