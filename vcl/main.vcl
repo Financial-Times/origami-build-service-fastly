@@ -23,7 +23,7 @@ sub vcl_recv {
 	}
 
   # Table is stored in a VCL snippet which can be viewed via the Fastly UI.
-  if (req.http.Origami-Key != table.lookup(secrets, "origami-key")) {
+  if (req.http.FT-Origami-Key != table.lookup(secrets, "FT-Origami-Key")) {
     error 901 "Invalid key";
   }
 
@@ -91,7 +91,7 @@ sub vcl_error {
 	if (obj.status == 901) {
 		set obj.http.RUM-Debug = obj.response;
 		set obj.status = 401;
-		set obj.response = "Incorrect value for header Origami-Key";
+		set obj.response = "Incorrect value for header FT-Origami-Key";
 		set obj.http.Cache-Control = "max-age=0, must-revalidate, no-cache, no-store, private";
 		return(deliver);
 	}

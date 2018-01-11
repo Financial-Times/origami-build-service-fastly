@@ -26,7 +26,7 @@ module.exports = {
     let request = chai
       .request("https://o2.shared.global.fastly.net")
       .get(`${pathname}${search}` || "")
-      .set('Origami-Key', process.env.ORIGAMI_KEY)
+      .set('FT-Origami-Key', process.env.FT_ORIGAMI_KEY)
       .set("Host", hostOverride(host))
       .set("Accept", "*/*")
       .set("Accept-Encoding", "gzip, deflate")
@@ -86,7 +86,7 @@ module.exports = {
     return chai
       .request("https://o2.shared.global.fastly.net")
       .post(`${pathname}${search}` || "")
-      .set('Origami-Key', process.env.ORIGAMI_KEY)
+      .set('FT-Origami-Key', process.env.FT_ORIGAMI_KEY)
       .set("Host", hostOverride(host))
       .set("Fastly-Debug", 1)
       .then(res => res || Promise.reject(res))
@@ -105,7 +105,7 @@ module.exports = {
     return chai
       .request("https://o2.shared.global.fastly.net")
       .purge(`${pathname}${search}` || "")
-      .set('Origami-Key', process.env.ORIGAMI_KEY)
+      .set('FT-Origami-Key', process.env.FT_ORIGAMI_KEY)
       .set("Host", hostOverride(host))
       .then(res => res || Promise.reject(res))
       .catch(err => {

@@ -20,7 +20,7 @@ export FASTLY_S3_ACCESS_KEY=
 export FASTLY_S3_SECRET_KEY=
 
 # For running the test suite
-export ORIGAMI_KEY=
+export FT_ORIGAMI_KEY=
 ```
 
 # Simulate Global Routing Failures
