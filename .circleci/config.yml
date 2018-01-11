@@ -1,0 +1,153 @@
+version: 2
+
+jobs:
+  validate_terraform:
+    docker:
+      - image: hashicorp/terraform
+    steps:
+      - checkout
+      - run:
+          name: Validate Terraform Formatting
+          command: "terraform fmt -check=true terraform/"
+
+  validate_node:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          key: npm-dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: npm-dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Validate Node.js Formatting
+          command: "[ -z \"$(node_modules/.bin/prettier --list-different 'test/**/*.js')\" ] || { node_modules/.bin/prettier --list-different 'test/**/*.js'; exit 1; }"
+
+  deploy_test:
+    docker:
+      - image: hashicorp/terraform
+    environment:
+      TF_VAR_FASTLY_SERVICE_ID: 2HgcjZpZ4vG53E5gVKIG0L
+    steps:
+      - checkout
+      - run:
+          name: Install Alpine dependencies
+          command: apk add bash jq
+      - run:
+          name: Setup Test Deploy
+          command: mv -f terraform/test_override.tf terraform/domains_override.tf
+      - run:
+          name: Initialize Terraform
+          command: terraform init terraform/
+      - run:
+          name: Import State from Test
+          command: terraform import -config=terraform/ fastly_service_v1.app 2HgcjZpZ4vG53E5gVKIG0L
+      - run:
+          name: Deploy to Test
+          command: .circleci/do-exclusively.sh terraform apply --auto-approve terraform/
+
+  verify_test:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          key: npm-dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: npm-dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Wait for Fastly to Deploy
+          command: sleep 30
+      - run:
+          name: Purge the Cache
+          command: curl -X POST -H "Fastly-Key:$FASTLY_API_KEY" https://api.fastly.com/service/2HgcjZpZ4vG53E5gVKIG0L/purge_all
+      - run:
+          name: Wait for the Cache to be Purged
+          command: sleep 30
+      - run:
+          name: Run Smoke Tests
+          command: npm test
+
+  deploy_production:
+    docker:
+      - image: hashicorp/terraform
+    environment:
+      TF_VAR_FASTLY_SERVICE_ID: 6DQQc0HH9BNwvlqQgXOk7H
+    steps:
+      - checkout
+      - run:
+          name: Install Alpine dependencies
+          command: apk add bash jq
+      - run:
+          name: Setup Production Deploy
+          command: rm terraform/test_override.tf
+      - run:
+          name: Initialize Terraform
+          command: terraform init terraform/
+      - run:
+          name: Import State from Production
+          command: terraform import -config=terraform/ fastly_service_v1.app 6DQQc0HH9BNwvlqQgXOk7H
+      - run:
+          name: Deploy to Production
+          command: .circleci/do-exclusively.sh --branch master terraform apply --auto-approve terraform/
+
+  verify_production:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          key: npm-dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: npm-dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Wait for Fastly to Deploy
+          command: sleep 30
+      - run:
+          name: Run Smoke Tests
+          command: npm test
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - validate_terraform
+      - validate_node
+
+      - deploy_test:
+          requires:
+            - validate_terraform
+            - validate_node
+
+      - verify_test:
+          requires:
+            - deploy_test
+
+      - deploy_production:
+          requires:
+            - verify_test
+          filters:
+            branches:
+              only: master
+
+      - verify_production:
+          requires:
+            - deploy_production
+          filters:
+            branches:
+              only: master

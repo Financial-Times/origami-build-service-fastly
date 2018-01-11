@@ -1,0 +1,10 @@
+# Compiled files
+*.tfstate
+*.tfstate.backup
+
+# Module directory
+.terraform/
+.sonarlint/
+
+# Node.js
+node_modules/
