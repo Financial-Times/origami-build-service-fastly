@@ -76,7 +76,7 @@ jobs:
           command: sleep 30
       - run:
           name: Run Smoke Tests
-          command: npm test
+          command: npm run test-staging
 
   deploy_production:
     docker:
