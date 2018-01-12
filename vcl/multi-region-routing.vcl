@@ -28,19 +28,19 @@ sub vcl_recv {
   # Gather the health of the shields and origins.
   declare local var.origin_eu_is_healthy BOOL;
   set req.backend = F_origin_eu;
-  set var.origin_eu_is_healthy = (req.backend.healthy && !req.http.Debug-Origin-EU-Force-Unhealthy);
+  set var.origin_eu_is_healthy = req.backend.healthy;
 
   declare local var.origin_us_is_healthy BOOL;
   set req.backend = F_origin_us;
-  set var.origin_us_is_healthy = (req.backend.healthy && !req.http.Debug-Origin-US-Force-Unhealthy);
+  set var.origin_us_is_healthy = req.backend.healthy;
 
   declare local var.shield_eu_is_healthy BOOL;
   set req.backend = ssl_shield_london_city_uk;
-  set var.shield_eu_is_healthy = (req.backend.healthy && !req.http.Debug-Shield-EU-Force-Unhealthy);
+  set var.shield_eu_is_healthy = req.backend.healthy;
 
   declare local var.shield_us_is_healthy BOOL;
   set req.backend = ssl_shield_iad_va_us;
-  set var.shield_us_is_healthy = (req.backend.healthy && !req.http.Debug-Shield-US-Force-Unhealthy);
+  set var.shield_us_is_healthy = req.backend.healthy;
 
   # Route EU requests to the nearest healthy shield or origin.
   if (var.region == "EU") {

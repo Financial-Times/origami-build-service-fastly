@@ -40,29 +40,6 @@ module.exports = {
       request = request.set("Debug-Force-Region", options.region);
     }
 
-    if (options.unhealthyEuOrigin) {
-      request = request.set("Debug-Origin-EU-Force-Unhealthy", "yes");
-    }
-
-    if (options.unhealthyUsOrigin) {
-      request = request.set("Debug-Origin-US-Force-Unhealthy", "yes");
-    }
-
-    if (options.unhealthyEuShield) {
-      request = request.set("Debug-Shield-EU-Force-Unhealthy", "yes");
-    }
-
-    if (options.unhealthyUsShield) {
-      request = request.set("Debug-Shield-US-Force-Unhealthy", "yes");
-    }
-
-    if (options.helpEverythingIsOnFire) {
-      request = request.set("Debug-Shield-EU-Force-Unhealthy", "yes");
-      request = request.set("Debug-Shield-US-Force-Unhealthy", "yes");
-      request = request.set("Debug-Origin-EU-Force-Unhealthy", "yes");
-      request = request.set("Debug-Origin-US-Force-Unhealthy", "yes");
-    }
-
     if (options.fakeClientIp) {
       // Set a fake client IP that will trigger a 403 from the denied ACL.
       request = request.set("Fastly-Client-IP", "192.0.2.0");

@@ -23,16 +23,6 @@ export FASTLY_S3_SECRET_KEY=
 export FT_ORIGAMI_KEY=
 ```
 
-# Simulate Global Routing Failures
-
-Within `multi-region-routing.vcl` we define several request headers that can be used to simulate unhealthy backends.
-
-* `Fastly-Force-Region` can be `EU` or `US`
-* Set `Fastly-Origin-EU-Force-Unhealthy` to simulate a failing EU origin
-* Set `Fastly-Origin-US-Force-Unhealthy` to simulate a failing US origin
-* Set `Fastly-Shield-EU-Force-Unhealthy` to simulate a failing EU shield
-* Set `Fastly-Shield-US-Force-Unhealthy` to simulate a failing US shield
-
 # Fastly Shared Secrets
 
 To authenticate requests between `www.ft.com` Fastly and our Fastly service , our service hecks for a shared secret added to requests.
