@@ -2,9 +2,6 @@ provider "fastly" {
   version = "0.11.1"
 }
 
-variable "FT-Origami-Key" {
-}
-
 locals {
   dictionary_name = "secrets"
 }
@@ -118,6 +115,9 @@ resource "fastly_service_dictionary_items_v1" "items" {
   dictionary_id = { for d in fastly_service_v1.app.dictionary : d.name => d.dictionary_id }[local.dictionary_name]
 
   items = {
-    "FT-Origami-Key" : var.FT-Origami-Key
+  }
+
+  lifecycle {
+    ignore_changes = [items, ]
   }
 }
