@@ -5,18 +5,6 @@ provider "fastly" {
 resource "fastly_service_v1" "app" {
   name = "Origami Build Service (github.com/Financial-Times/origami-build-service)"
 
-  // Logging to S3, see https://docs.fastly.com/guides/streaming-logs/custom-log-formats for formats.
-  s3logging {
-    name           = "Request Logs"
-    bucket_name    = "ft-cdn-logs"
-    path           = "/origami-build-service.in.ft.com/production/"
-    period         = "3600"
-    gzip_level     = 9
-    format_version = 2
-    format         = "%v %{server.region}V [%{%Y-%m-%d %H:%M:%S}t.%{msec_frac}t] \"%r\" %>s %{req.bytes_read}V %{resp.bytes_written}V %{time.elapsed.msec}V %{tls.client.protocol}V %{fastly_info.state}V %{req.http.Fastly-FF}V"
-    message_type   = "blank"
-  }
-
   // Backend and healthcheck for the eu.
   backend {
     name                  = "origin_eu"
