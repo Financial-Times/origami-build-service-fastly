@@ -8,8 +8,6 @@ import querystring;
 # The Fastly VCL boilerplate.
 include "fastly-boilerplate-begin.vcl";
 
-# Use `req.http.Fastly-FF` conditions to ensure logic is run only once at the shield, negate for at the edge.
-
 sub vcl_recv {
   # Save the request's URL and host before we modify it.
   if (!req.http.Fastly-FF) {
@@ -66,7 +64,6 @@ sub vcl_deliver {
     set resp.http.Debug-Backend-Decision = req.http.Debug-Backend-Decision;
     set resp.http.Debug-Backend-Health = req.http.Debug-Backend-Health;
     set resp.http.Debug-Cache-State = fastly_info.state;
-    set resp.http.Debug-Enable-Shielding = req.http.Debug-Enable-Shielding;
     set resp.http.Debug-Force-Region = req.http.Debug-Force-Region;
     set resp.http.Debug-Original-Url = req.http.Original-Url;
     set resp.http.Debug-Request-Header-Accept-Encoding = req.http.Accept-Encoding;

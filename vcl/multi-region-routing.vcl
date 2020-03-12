@@ -25,7 +25,7 @@ sub vcl_recv {
     set var.region = "EU";
   }
 
-  # Gather the health of the shields and origins.
+  # Gather the health of the origins.
   declare local var.origin_eu_is_healthy BOOL;
   set req.backend = F_origin_eu;
   set var.origin_eu_is_healthy = req.backend.healthy;
@@ -34,26 +34,12 @@ sub vcl_recv {
   set req.backend = F_origin_us;
   set var.origin_us_is_healthy = req.backend.healthy;
 
-  declare local var.shield_eu_is_healthy BOOL;
-  set req.backend = ssl_shield_london_city_uk;
-  set var.shield_eu_is_healthy = req.backend.healthy;
-
-  declare local var.shield_us_is_healthy BOOL;
-  set req.backend = ssl_shield_iad_va_us;
-  set var.shield_us_is_healthy = req.backend.healthy;
-
-  # Route EU requests to the nearest healthy shield or origin.
+  # Route EU requests to the nearest healthy origin.
   if (var.region == "EU") {
-    if (server.identity !~ "-LCY$" && req.http.Fastly-FF !~ "-LCY" && var.shield_eu_is_healthy) {
-      set req.backend = ssl_shield_london_city_uk;
-      set req.http.FT-Region = server.region;
-    } elseif (var.origin_eu_is_healthy) {
+    if (var.origin_eu_is_healthy) {
       set req.backend = F_origin_eu;
       set req.http.FT-Region = server.region;
       set req.http.Host = table.lookup(origin_hosts, var.region);
-    } elseif (var.shield_us_is_healthy) {
-      set req.backend = ssl_shield_iad_va_us;
-      set req.http.FT-Region = server.region;
     } elseif (var.origin_us_is_healthy) {
       set req.backend = F_origin_us;
       set req.http.FT-Region = server.region;
@@ -65,18 +51,12 @@ sub vcl_recv {
     }
   }
 
-  # Route US requests to the nearest healthy shield or origin.
+  # Route US requests to the nearest healthy origin.
   if (var.region == "US") {
-    if (server.identity !~ "-IAD$" && req.http.Fastly-FF !~ "-IAD" && var.shield_us_is_healthy) {
-      set req.backend = ssl_shield_iad_va_us;
-      set req.http.FT-Region = server.region;
-    } elseif (var.origin_us_is_healthy) {
+    if (var.origin_us_is_healthy) {
       set req.backend = F_origin_us;
       set req.http.FT-Region = server.region;
       set req.http.Host = table.lookup(origin_hosts, var.region);
-    } elseif (var.shield_eu_is_healthy) {
-      set req.backend = ssl_shield_london_city_uk;
-      set req.http.FT-Region = server.region;
     } elseif (var.origin_eu_is_healthy) {
       set req.backend = F_origin_eu;
       set req.http.FT-Region = server.region;
