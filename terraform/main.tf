@@ -17,7 +17,6 @@ resource "fastly_service_v1" "app" {
     healthcheck           = "origin_eu_healthcheck"
     ssl_cert_hostname     = "origami-build-service-eu.herokuapp.com"
     auto_loadbalance      = false
-    shield                = "london_city-uk"
     connect_timeout       = 5000
     first_byte_timeout    = 120000
     between_bytes_timeout = 120000
@@ -32,7 +31,6 @@ resource "fastly_service_v1" "app" {
     healthcheck           = "origin_us_healthcheck"
     ssl_cert_hostname     = "origami-build-service-us.herokuapp.com"
     auto_loadbalance      = false
-    shield                = "iad-va-us"
     connect_timeout       = 5000
     first_byte_timeout    = 120000
     between_bytes_timeout = 120000
@@ -57,14 +55,6 @@ resource "fastly_service_v1" "app" {
     timeout   = 5000
     threshold = 2
     window    = 5
-  }
-
-  // Edge condition.
-  condition {
-    name      = "is_edge_server"
-    statement = "!req.http.Fastly-FF"
-    type      = "REQUEST"
-    priority  = 10
   }
 
   // Enable gzip compression.
