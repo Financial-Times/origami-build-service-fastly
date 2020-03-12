@@ -27,14 +27,4 @@ export FT_ORIGAMI_KEY=
 
 To authenticate requests between `www.ft.com` Fastly and our Fastly service , our service hecks for a shared secret added to requests.
 
-The secret is stored in a VCL Snippet, which can be seen in the Fastly UI. It is kept out of this repository because it is a secret.
-
-# FT Tooling Team
-
-The tooling team manage several chunks of VCL to enforce WAF, and two shared ACLs.
-
-Both `ft_manage_blacklist` and `FT_Internal_IP_Whitelist` are ACLs that we shouldn't have to manage, but should be aware of, and enforce.
-
-For WAF, there's nothing in the UI to view yet. You will see the addition of some logging and condition artifacts in both the UI and Terraform, until there is 100% for WAF in Terraform.
-
-With `req.http.bypass_waf`, this **must** be set explicitly to prevent a means of skipping WAF.
+The secret is stored in a Fastly Edge Dictionary. 
