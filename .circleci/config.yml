@@ -49,7 +49,7 @@ jobs:
           command: terraform import -config=terraform/ fastly_service_v1.app 2HgcjZpZ4vG53E5gVKIG0L
       - run:
           name: Deploy to Test
-          command: .circleci/do-exclusively.sh terraform apply --auto-approve terraform/
+          command: .circleci/do-exclusively.sh terraform apply --auto-approve -var FT-Origami-Key=$FT-Origami-Key terraform/
 
   verify_test:
     docker:
@@ -99,7 +99,7 @@ jobs:
           command: terraform import -config=terraform/ fastly_service_v1.app 6DQQc0HH9BNwvlqQgXOk7H
       - run:
           name: Deploy to Production
-          command: .circleci/do-exclusively.sh --branch master terraform apply --auto-approve terraform/
+          command: .circleci/do-exclusively.sh --branch master terraform apply --auto-approve -var FT-Origami-Key=$FT-Origami-Key terraform/
 
   verify_production:
     docker:
