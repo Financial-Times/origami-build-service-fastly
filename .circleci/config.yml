@@ -47,6 +47,7 @@ jobs:
       - run:
           name: Import State from Test
           command: terraform import -config=terraform/ fastly_service_v1.app 2HgcjZpZ4vG53E5gVKIG0L
+      - run: terraform import -config="fastly/terraform" fastly_service_dictionary_items_v1.items "2HgcjZpZ4vG53E5gVKIG0L/0h5jWqqz7Mxuv41G4Fcev2"
       - run:
           name: Deploy to Test
           command: .circleci/do-exclusively.sh terraform apply --auto-approve -var FT-Origami-Key=$FT-Origami-Key terraform/
@@ -97,6 +98,7 @@ jobs:
       - run:
           name: Import State from Production
           command: terraform import -config=terraform/ fastly_service_v1.app 6DQQc0HH9BNwvlqQgXOk7H
+      - run: terraform import -config="fastly/terraform" fastly_service_dictionary_items_v1.items "6DQQc0HH9BNwvlqQgXOk7H/5dNU2c7TTuaygdgFDyLtl6"
       - run:
           name: Deploy to Production
           command: .circleci/do-exclusively.sh --branch master terraform apply --auto-approve -var FT-Origami-Key=$FT-Origami-Key terraform/
