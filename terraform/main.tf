@@ -5,6 +5,10 @@ provider "fastly" {
 variable "FT-Origami-Key" {
 }
 
+locals {
+  dictionary_name = "secrets"
+}
+
 resource "fastly_service_v1" "app" {
   name = "Origami Build Service (github.com/Financial-Times/origami-build-service)"
 
@@ -105,13 +109,13 @@ resource "fastly_service_v1" "app" {
   }
 
   dictionary {
-    name = "secrets"
+    name = local.dictionary_name
   }
 }
 
 resource "fastly_service_dictionary_items_v1" "items" {
-  service_id    = "${fastly_service_v1.app.id}"
-  dictionary_id = "${ { for dictionary in fastly_service_v1.app.dictionary : dictionary.name => dictionary.dictionary_id }["secrets"]}"
+  service_id    = fastly_service_v1.app.id
+  dictionary_id = { for d in fastly_service_v1.app.dictionary : d.name => d.dictionary_id }[local.dictionary_name]
 
   items = {
     "FT-Origami-Key" : var.FT-Origami-Key
