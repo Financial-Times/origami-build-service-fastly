@@ -82,25 +82,6 @@ resource "fastly_service_v1" "app" {
     destination = "http.Proxy"
   }
 
-  #
-  # TODO: Uncomment this when the ACLs are added to our Fastly service by the FT Tooling team
-  #
-  // WAF Configuration.
-  # condition {
-  #   name      = "Waf_Prefetch"
-  #   statement = "!req.backend.is_shield && !req.http.bypass_waf"
-  #   type      = "PREFETCH"
-  #   priority  = 10
-  # }
-
-
-  # response_object {
-  #   name     = "WAF_Response"
-  #   status   = 403
-  #   response = "Forbidden"
-  #   content  = "{ \"Access Denied\" : \"} req.http.x_request_id {\" }"
-  # }
-
   // Custom VCL.
   vcl {
     name    = "main.vcl"
