@@ -104,27 +104,27 @@ resource "fastly_service_v1" "app" {
   // Custom VCL.
   vcl {
     name    = "main.vcl"
-    content = "${file("${path.module}/../vcl/main.vcl")}"
+    content = file("${path.module}/../vcl/main.vcl")
     main    = true
   }
   vcl {
     name    = "caching.vcl"
-    content = "${file("${path.module}/../vcl/caching.vcl")}"
+    content = file("${path.module}/../vcl/caching.vcl")
   }
   vcl {
     name    = "fastly-boilerplate-begin.vcl"
-    content = "${file("${path.module}/../vcl/fastly-boilerplate-begin.vcl")}"
+    content = file("${path.module}/../vcl/fastly-boilerplate-begin.vcl")
   }
   vcl {
     name    = "fastly-boilerplate-end.vcl"
-    content = "${file("${path.module}/../vcl/fastly-boilerplate-end.vcl")}"
+    content = file("${path.module}/../vcl/fastly-boilerplate-end.vcl")
   }
   vcl {
     name    = "multi-region-routing.vcl"
-    content = "${file("${path.module}/../vcl/multi-region-routing.vcl")}"
+    content = file("${path.module}/../vcl/multi-region-routing.vcl")
   }
   vcl {
     name    = "surrogate-keys.vcl"
-    content = "${file("${path.module}/../vcl/surrogate-keys.vcl")}"
+    content = file("${path.module}/../vcl/surrogate-keys.vcl")
   }
 }
