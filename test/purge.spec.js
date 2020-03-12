@@ -6,6 +6,6 @@ describe("purge", () => {
   it("rejects unauthorized purge requests", () => {
     return request
       .purge("https://origami-build-service.in.ft.com/v2")
-      .then(res => expect(res).to.have.status(400));
+      .then(res => expect(res).to.have.status(401));
   });
 });
