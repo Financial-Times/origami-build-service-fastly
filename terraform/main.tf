@@ -2,6 +2,9 @@ provider "fastly" {
   version = "0.11.1"
 }
 
+variable "FT-Origami-Key" {
+}
+
 resource "fastly_service_v1" "app" {
   name = "Origami Build Service (github.com/Financial-Times/origami-build-service)"
 
@@ -99,5 +102,18 @@ resource "fastly_service_v1" "app" {
   vcl {
     name    = "surrogate-keys.vcl"
     content = file("${path.module}/../vcl/surrogate-keys.vcl")
+  }
+
+  dictionary {
+    name = "secrets"
+  }
+}
+
+resource "fastly_service_dictionary_items_v1" "items" {
+  service_id    = "${fastly_service_v1.app.id}"
+  dictionary_id = "${ { for dictionary in fastly_service_v1.app.dictionary : dictionary.name => dictionary.dictionary_id }["secrets"]}"
+
+  items = {
+    "FT-Origami-Key": var.FT-Origami-Key
   }
 }
