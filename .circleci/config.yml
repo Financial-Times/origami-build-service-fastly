@@ -37,7 +37,7 @@ jobs:
       - checkout
       - run:
           name: Install Alpine dependencies
-          command: apk add bash jq
+          command: apk add bash jq curl
       - run:
           name: Setup Test Deploy
           command: mv -f terraform/test_override.tf terraform/domains_override.tf
@@ -87,7 +87,7 @@ jobs:
       - checkout
       - run:
           name: Install Alpine dependencies
-          command: apk add bash jq
+          command: apk add bash jq curl
       - run:
           name: Setup Production Deploy
           command: rm terraform/test_override.tf
