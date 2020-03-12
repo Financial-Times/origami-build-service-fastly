@@ -27,4 +27,4 @@ export FT_ORIGAMI_KEY=
 
 To authenticate requests between `www.ft.com` Fastly and our Fastly service , our service hecks for a shared secret added to requests.
 
-The secret is stored in a Fastly Edge Dictionary. 
+The secret is stored in a Fastly Edge Dictionary. The Terraform configuration makes the dictionary, but we add the item to the dictionary via the Fastly UI manually.
