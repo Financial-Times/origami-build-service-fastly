@@ -21,6 +21,13 @@ export FASTLY_S3_SECRET_KEY=
 
 # For running the test suite
 export FT_ORIGAMI_KEY=
+
+# For authenticating with Splunk for logging.
+# See `var.SPLUNK_ORIGAMI_TOKEN` uses.
+# Terraform searches the environment of its own process
+# for environment variables named TF_VAR_ followed by the
+# name of a declared variable.
+export TF_VAR_SPLUNK_ORIGAMI_TOKEN=
 ```
 
 # Fastly Shared Secrets

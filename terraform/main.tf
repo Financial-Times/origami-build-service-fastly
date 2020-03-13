@@ -6,8 +6,21 @@ locals {
   dictionary_name = "secrets"
 }
 
+variable "SPLUNK_ORIGAMI_TOKEN" {
+  type = string
+}
+
 resource "fastly_service_v1" "app" {
   name = "Origami Build Service (github.com/Financial-Times/origami-build-service)"
+
+  // Logging to Splunk
+  splunk {
+    name               = "Splunk"
+    url                = "https://http-inputs-financialtimes.splunkcloud.com:443/services/collector/event"
+    format             = file("${path.module}/../vcl/splunk-log-format.vcl")
+    token              = var.SPLUNK_ORIGAMI_TOKEN
+    response_condition = "is_log_sample"
+  }
 
   // Backend and healthcheck for the eu.
   backend {
@@ -55,6 +68,14 @@ resource "fastly_service_v1" "app" {
     timeout   = 5000
     threshold = 2
     window    = 5
+  }
+
+  // Log sampling condition.
+  condition {
+    name      = "is_log_sample"
+    statement = "(req.backend.is_shield || fastly.ff.visits_this_service < 2) && (http_status_matches(resp.status, \"!200,301,304,404\") || randombool(1, 10))"
+    type      = "RESPONSE"
+    priority  = 10
   }
 
   // Enable gzip compression.
