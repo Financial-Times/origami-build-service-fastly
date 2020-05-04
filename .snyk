@@ -9,4 +9,3 @@ patch:
   'npm:extend:20180424':
     - chai-http > superagent > extend:
         patched: '2020-05-04T10:47:26.707Z'
-
