@@ -1,0 +1,11 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - chai-http > superagent > debug:
+        patched: '2020-05-06T18:56:06.364Z'
+  'npm:extend:20180424':
+    - chai-http > superagent > extend:
+        patched: '2020-05-06T18:56:06.364Z'
